@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+  tomcat-service:
+    build:
+      context: ./tomcat
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./war
+        target: /tmp
+    ports:
+      - "8080:80"
+    command: cp /tmp/hello-1.0.war /var/lib/tomcat9/webapps/
+    command: catalina.sh run
+    depends_on:
+      - "maven"
+   
+
+  maven:
+    build:
+      context: ./maven
+      dockerfile: Dockerfile 
+    volumes:
+      - type: bind
+        source: ./war
+        target: /tmp
+    command: cp /home/GIT/boxfuse-sample-java-war-hello/target/hello-1.0.war  /tmp/
+    command:  tail -f /dev/null
