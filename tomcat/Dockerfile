@@ -1,11 +1,12 @@
-FROM ubuntu:18.04
-ENV CATALINA_HOME /usr/share/tomcat9
+FROM adoptopenjdk/openjdk11:alpine-slim
+RUN apk update
+RUN apk add wget
+ENV CATALINA_HOME /usr/local/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
 RUN mkdir -p "$CATALINA_HOME"
-ENV CATALINA_BASE /var/lib/tomcat9
-RUN apt update && \
-apt install default-jdk -y && \
-apt install tomcat9 -y
-EXPOSE 8080
 WORKDIR $CATALINA_HOME
+RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.43/bin/apache-tomcat-9.0.43.tar.gz -O /tmp/tomcat.tar.gz
+RUN cd /tmp && tar xvfz tomcat.tar.gz
+RUN cp -Rv /tmp/apache-tomcat-9.0.43/* /usr/local/tomcat/
+EXPOSE 8080
 CMD ["catalina.sh", "run"]
